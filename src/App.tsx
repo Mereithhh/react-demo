@@ -9,7 +9,3 @@ function App() {
 }
 
 export default App
-
-const Page: React.FC<any> = (props) => {
-  return <></>
-}
