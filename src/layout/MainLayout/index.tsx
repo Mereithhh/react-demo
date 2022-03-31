@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { GlobalContext } from "../../components/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { config } from "../../config";
+import { logout } from "../../utils";
 const { Header, Content, Sider } = Layout;
 export interface MainLayoutProps {}
 export const MainLayout: React.FC<MainLayoutProps> = (props) => {
@@ -19,7 +20,7 @@ export const MainLayout: React.FC<MainLayoutProps> = (props) => {
         <div
           className="logout"
           onClick={() => {
-            store?.authClient?.logout();
+            logout();
             nav("/login");
           }}
         >

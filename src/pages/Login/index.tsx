@@ -1,34 +1,50 @@
-import { Guard } from "@authing/react-ui-components";
-import { User } from "@authing/react-ui-components/components/AuthingGuard/types/GuardConfig";
-// 引入 css 文件
-import "@authing/react-ui-components/lib/index.min.css";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { GlobalContext } from "../../components/GlobalContext";
-import { config } from "../../config";
+import { login as fetchLogin } from "../../utils/api";
+import { Button, Form, Input } from "antd";
+import { getLoginState } from "../../utils";
 export interface LoginProps {}
 export const Login: React.FC<LoginProps> = (props) => {
   const navigate = useNavigate();
-  const {store,setStore} = useContext(GlobalContext)
-  const onLogin = (userInfo: User, authClient: any) => {
-    setStore({
-      ...store,
-      user: userInfo,
-      authClient
-    })
-    navigate("/")
-  }
+  const { store, setStore } = useContext(GlobalContext);
+  const login = useCallback(
+    async (username: string, password: string) => {
+      const { user, token } = await fetchLogin(username, password);
+      window.localStorage.setItem("_token", token);
+      window.localStorage.setItem("_user", user);
+      setStore({ ...store, user });
+    },
+    [setStore, store]
+  );
+  useEffect(() => {
+    const hasLogin = getLoginState();
+    if (hasLogin) {
+      navigate("/");
+    }
+  });
   return (
     <>
       <div className="login-page">
-        <Guard
-          appId={config.appId}
-          onLogin={onLogin}
-          config={{
-            isSSO: true
-          }}
-        />
+        <div className="login-box">
+          <Form
+            onFinish={(values) => {
+              login(values.username, values.password);
+            }}
+            autoComplete="on"
+          >
+            <Form.Item name="username" required label="账号">
+              <Input />
+            </Form.Item>
+            <Form.Item name="password" required label="密码">
+              <Input.Password />
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">登录</Button>
+            </Form.Item>
+          </Form>
+        </div>
       </div>
     </>
   );
