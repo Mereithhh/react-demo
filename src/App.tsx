@@ -5,6 +5,8 @@ import { AuthLayout } from "./layout/Auth";
 import { Login } from "./pages/Login";
 import { initAuthClient, getAuthClient } from "@authing/react-ui-components";
 import { config } from "./config";
+import 'antd/dist/antd.css';
+import { MainLayout } from "./layout/MainLayout";
 initAuthClient({
   appId: config.appId,
 });
@@ -26,13 +28,15 @@ function App() {
             path="/"
             element={
               <AuthLayout>
-                <button
-                  onClick={() => {
-                    store?.authClient?.logout();
-                  }}
-                >
-                  退出登录
-                </button>
+                <MainLayout>
+                  <button
+                    onClick={() => {
+                      store?.authClient?.logout();
+                    }}
+                  >
+                    退出登录
+                  </button>
+                </MainLayout>
               </AuthLayout>
             }
           />
